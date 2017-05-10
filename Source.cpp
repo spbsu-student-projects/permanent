@@ -11,24 +11,20 @@
 #include <ctime>
 using namespace std;
 string s;
-vector<vector<polynom>> matr;
+vector<vector<polynom> > matr;
 int n;
 vector<int> perm;
 long long fact;
 polynom res;
 int main(){
-	ifstream fin("input.txt");
-	ofstream fout("output.txt");
-	fin >> n;
-	int start = clock();
+	cin >> n;
 	matr.resize(n);
 	for (int i = 0; i < n; i++){
 		for (int j = 0; j < n; j++){
-			fin >> s;
+			cin >> s;
 			matr[i].push_back(polynom_make_polynom(s));
 		}
 	}
-	//fout << clock() - start<< endl;
 	fact = 1;
 	for (int i = 1; i <= n; i++){
 		fact = fact * i;
@@ -37,7 +33,6 @@ int main(){
 		perm.push_back(i);
 	}
 	fact = 1;
-	//res = polynom();
 	for (int i = 0; i < n; i++){
 		fact = fact * (i + 1);
 	}
@@ -48,9 +43,8 @@ int main(){
 			tres = tres * matr[j][perm[j]];
 		}
 		res += tres;
-		next_permutation(perm.begin(),perm.end()); 
+		next_permutation(perm.begin(),perm.end());
 	}
-	fout << res << endl;
-	//fout << clock() - start << endl;
+	cout << res << endl;
 	return 0;
 }
