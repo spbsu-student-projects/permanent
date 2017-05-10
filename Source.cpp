@@ -9,12 +9,12 @@
 #include <string>
 #include <fstream>
 #include <ctime>
+#include <iomanip>
 using namespace std;
 string s;
 vector<vector<polynom> > matr;
 int n;
 vector<int> perm;
-long long fact;
 polynom res;
 int main(){
 	cin >> n;
@@ -25,26 +25,32 @@ int main(){
 			matr[i].push_back(polynom_make_polynom(s));
 		}
 	}
-	fact = 1;
-	for (int i = 1; i <= n; i++){
-		fact = fact * i;
+	int pow2 = 1 << n;
+	for (int i = 0; i < pow2; i++) {
+        vector<bool> take(n);
+        int x = i;
+        int s = 0;
+        for (int j = 0; j < n; j++) {
+            if (x == 0) break;
+            if (x % 2) {
+                take[j] = true;
+                s++;
+            }
+            x /= 2;
+        }
+        polynom summator;
+        if (s % 2 != 0) summator = polynom(-1);
+        else summator = polynom(1);
+        for (int j = 0; j < n; j++) {
+            polynom sum;
+            for (int k = 0; k < n; k++) {
+                if (take[k]) sum += matr[j][k];
+            }
+            summator *= sum;
+        }
+        res += summator;
 	}
-	for (int i = 0; i < n; i++){
-		perm.push_back(i);
-	}
-	fact = 1;
-	for (int i = 0; i < n; i++){
-		fact = fact * (i + 1);
-	}
-	polynom tres;
-	for (int k = 0; k < fact; k++){
-		tres = polynom(1);
-		for (int j = 0; j < n; j++){
-			tres = tres * matr[j][perm[j]];
-		}
-		res += tres;
-		next_permutation(perm.begin(),perm.end());
-	}
+	if (n % 2 != 0) res = res * polynom(-1);
 	cout << res << endl;
 	return 0;
 }
