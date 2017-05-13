@@ -1,6 +1,6 @@
 # permanent
-## Что это?
-permanent - is a program for counting the permanent [the permanent](https://ru.wikipedia.org/wiki/%D0%9F%D0%B5%D1%80%D0%BC%D0%B0%D0%BD%D0%B5%D0%BD%D1%82 "Перманент") of a matrix using Ryser's formula with **O(2^n`*`n^2)** time complexity. Not only numbers but also polynomials in many variables can be the elements of the matrix.
+## What is it?
+permanent is a program for counting the permanent [the permanent](https://en.wikipedia.org/wiki/Permanent) of a matrix using Ryser's formula with **O(2^n`*`n^2)** time complexity. Not only numbers but also polynomials in many variables can be the elements of the matrix.
 ### What do we mean by a polynomial?
 
 By a polynomial we mean an arithmetical expression, which doesn't contain spaces written with the use of `+`,`-`,`*` and `^` signs 
