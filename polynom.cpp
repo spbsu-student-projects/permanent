@@ -252,6 +252,7 @@ std::ostream& operator<<(std::ostream& os, polynom& poly) {
 		os << a.first;
 		all_monoms++;
 	}
+	if (all_monoms == 0) os << 0;
 	return os;
 }
 
