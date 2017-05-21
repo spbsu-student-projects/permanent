@@ -17,6 +17,7 @@ int n;
 vector<int> perm;
 polynom res;
 int main(){
+    n = 0;
 	cin >> n;
 	matr.resize(n);
 	for (int i = 0; i < n; i++){
@@ -51,6 +52,7 @@ int main(){
         res += summator;
 	}
 	if (n % 2 != 0) res = res * polynom(-1);
+    if (n == 0) res = polynom(0);
 	cout << res << endl;
 	return 0;
 }
