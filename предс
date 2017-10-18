@@ -1,0 +1,152 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <vector>
+#include <set>
+#include <math.h>
+using namespace std;
+struct compl{
+	vector<int> charr;
+};
+int n; //number of elements in G
+int a[1000][1000]; //multiplication table
+int inv[1000]; //g^-1;
+int ed; //1
+vector<compl> v[1000]; // characters 
+int repnum = 0;
+int prod(vector<compl> v1, vector<compl> v2) {
+	int res = 0;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			res += v1[i].charr[j] * v2[i].charr[(n - j) % n] - v1[i].charr[j]*v2[i].charr[(n + n/2 - j)% n];
+		}
+	}
+	return res/2;
+}
+bool eq(vector<compl> v1, vector<compl> v2) {
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (v1[i].charr[j] != v2[i].charr[j]) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+vector<compl> summ(vector<compl> v1, vector<compl> v2) {
+	vector<compl> v3;
+	v3.resize(n);
+	for (int i = 0; i < n; i++) {
+		v3[i].charr.resize(n);
+		for (int j = 0; j < n; j++) {
+			v3[i].charr[j] = v1[i].charr[j] + v2[i].charr[j];
+		}
+	}
+	return v3;
+}
+compl sumc(compl c1, compl c2) {
+	compl c3;
+	c3.charr.resize(n);
+	for (int i = 0; i < n; i++) {
+		c3.charr[i] = c2.charr[i] + c1.charr[i];
+	}
+	return c3;
+}
+int main() {
+	freopen("group.txt", "r",stdin);
+	freopen("repres.txt", "w", stdout);
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			scanf("%d", &a[i][j]);
+		}
+	}
+	for (int i = 0; i < n; i++) {
+		bool flag = true;
+		for (int j = 0; j < n; j++) {
+			if (a[i][j] != j) {
+				flag = false;
+			}
+		}
+		if (flag) {
+			ed = i;
+		}
+	}
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (a[i][j] == ed) {
+				inv[i] = j;
+			}
+		}
+	}
+	for (int i = 0; i < n; i++) {   
+		if (i != ed) {
+			int k = i;
+			set<int> cyc;
+			vector<int> cycv;
+			while (k != ed) {
+				cyc.insert(k);
+				cycv.push_back(k);
+				k = a[k][i];
+			}
+			cycv.push_back(ed);
+			cyc.insert(ed);
+			//cyclic group is built
+			vector<compl> u;
+			u.resize(n);    //vector of 
+			for (int j = 0; j < n; j++) {
+				u[j].charr.resize(n);
+			}
+			for (int t = 0; t < cyc.size(); t++) {  //power: C_k = <g>, g -> ksi^t, ksi^k = 1, ksi = cos(2pi/k)+isin(2pi/k)
+				for (int j = 0; j < cyc.size(); j++) { //element
+					u[cycv[j]].charr[((j + 1)*(n / cyc.size())*t) % n]++;
+				}
+				vector<compl> w;   /// character of Ind G C_k
+				w.resize(n);     
+				for (int j = 0; j < n; j++) {
+					w[j].charr.resize(n);
+				}
+				for (int j = 0; j < n; j++) {
+					for (int z = 0; z < n; z++) {
+						if (cyc.find(a[a[inv[z]][j]][z]) != cyc.end()) {
+							w[j] = sumc(w[j], u[a[a[inv[z]][j]][z]]);
+						}
+					}
+				}
+				for (int j = 0; j < n; j++) {
+					for (int z = 0; z < n; z++) {
+						w[j].charr[z] = w[j].charr[z] / cyc.size();
+					}
+				}
+				//printf("%d\n", prod(w, w));
+				if (prod(w, w) == n) {
+					if (repnum == 0) {
+						v[0] = w;
+						printf("%d %d ", w[ed].charr[0] - w[ed].charr[n/2],t + 1);
+						for (int z = 0; z < cycv.size(); z++) {
+							printf("%d ", cycv[z]);
+						}
+						printf("\n");
+						repnum++;
+					}
+					else {
+						bool uniq = true;
+						for (int z = 0; z < repnum; z++) {
+							if (eq(v[z],w)) {
+								uniq = false;
+							}
+						}
+						if (uniq) {
+							v[repnum] = w;
+							printf("%d %d ", w[ed].charr[0] - w[ed].charr[n / 2], t + 1);
+							for (int z = 0; z < cycv.size(); z++) {
+								printf("%d ", cycv[z]);
+							}
+							printf("\n");
+							repnum++;
+						}
+					}
+				}
+			}
+		}
+	}
+}
